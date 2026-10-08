@@ -3,3 +3,5 @@ outputs/checkpoints/
 outputs/logs/
 *.pt
 *.pth
+.venv
+*.zip

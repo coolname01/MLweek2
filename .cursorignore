@@ -1,0 +1,5 @@
+data/
+outputs/checkpoints/
+outputs/logs/
+*.pt
+*.pth

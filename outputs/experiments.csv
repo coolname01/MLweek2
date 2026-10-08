@@ -1,4 +1,11 @@
-model,weights,unfrozen,img_size,epochs,batch_size,optimizer,lr_head,lr_layer4,label_smoothing,best_val_acc,best_epoch,sklearn_val_acc,mean_epoch_sec,seed,pipeline
-resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.949928,10,0.949928,55.82,42,cpu_pil
-resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.944206,6,0.944206,17.01,42,gpu_uint8_no_aa
-resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.949928,12,0.949928,18.73,42,gpu_uint8
+model,weights,unfrozen,img_size,epochs,batch_size,optimizer,lr_head,lr_layer4,label_smoothing,best_val_acc,best_epoch,sklearn_val_acc,mean_epoch_sec,seed,pipeline,aug,val_corrupt_acc,sklearn_val_corrupt
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.949928,10,0.949928,55.82,42,cpu_pil,,,
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.944206,6,0.944206,17.01,42,gpu_uint8_no_aa,,,
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.949928,12,0.949928,18.73,42,gpu_uint8,,,
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.949928,12,0.949928,18.73,42,reference_corrupt_eval,A,0.908441,0.908441
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.949928,12,0.949928,17.26,42,robust_sweep,A,0.908441,0.908441
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.944206,9,0.944206,17.32,7,robust_sweep,A,0.909871,0.909871
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.939914,8,0.939914,17.92,42,robust_sweep,B,0.909871,0.909871
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.939914,10,0.939914,17.82,7,robust_sweep,B,0.908441,0.908441
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.9299,14,0.9299,18.09,42,robust_sweep,C,0.927039,0.927039
+resnet50,IMAGENET1K_V1,layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1,0.934192,11,0.934192,18.12,7,robust_sweep,C,0.919886,0.919886

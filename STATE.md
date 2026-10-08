@@ -1,5 +1,5 @@
 # STATE (обновляется агентом после каждого шага)
-- Железо: (GPU-RTX3060/VRAM -32 gb 3200 mhz /CPU ryzen 5 3600 4ghz— заполнить)
+- Железо: (GPU-RTX3060 12 gb/ RAM -32 gb 3200 mhz /CPU ryzen 5 3600 4ghz)
 - Имя для submission: ivasocc
 - Лучшая модель: —   val acc: —
 - Сделано: —

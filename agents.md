@@ -81,3 +81,13 @@ text
 
 ## 8. Git
 Работай в текущей ветке проекта. Коммиты маленькие, осмысленные (`feat: add blur aug`). Не коммить `data/`, `*.pt`, `outputs/logs`. Коммить `experiments.csv` и финальный submission.
+## 9. Формат работы (из baseline Week5_baseline.ipynb)
+- Основной артефакт — ноутбук, выполняемый end-to-end с SEED=42. Отдельные модули в src/ допустимы, но финальный результат должен воспроизводиться ноутбуком.
+- Данные: train/ val/ test/ + train.csv, val.csv (id,label), test.csv (id), classes.csv. id уже с расширением (`1000.jpg`). Путь к данным — переменная окружения CONTEST_DATA.
+- Модель = torchvision-backbone с ImageNet-весами + собственный классификатор через nn.Sequential, минимум один размороженный блок. Допустимы: alexnet, vgg*(_bn), googlenet, inception_v3, resnet18-152.
+- Внешние данные запрещены.
+- Для ImageNet-моделей: IMG_SIZE 224 (inception_v3: 299), Normalize mean=(0.485,0.456,0.406), std=(0.229,0.224,0.225).
+- Не менять cudnn.benchmark=False и deterministic=True.
+- Перед коммитом очищай вывод ячеек ноутбука (`jupyter nbconvert --clear-output --inplace`), чтобы не раздувать репозиторий.
+- Обязательные пункты задания: сравнение с MLP/CNN (таблица + графики), confusion matrix на val с разбором ошибок, объяснение, какое изменение дало максимальный прирост.
+- Базовые результаты для сравнения: MLP 0.356, simple CNN 0.549 (val accuracy).

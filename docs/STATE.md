@@ -4,7 +4,10 @@
 - torch/CUDA: torch 2.14.1+cu126, CUDA 12.6, torch.cuda.is_available()=True
 - Файл submission: submission.csv (+ копия Name_Surname.csv для Moodle)
 - Baseline из блокнота: MLP val 0.356, CNN val 0.549 (32x32, Colab CPU)
-- Лучшая модель: ResNet50 layer4, аугментация A, seed 7. Чистый val 0.9442, искажённый 0.9099 (эпоха 9/15). Чекпоинт outputs/checkpoints/resnet50_robust.pt
+- Лучшая модель: ResNet50 layer3+layer4, конфиг F, seed 7. Чистый val 0.9599, искажённый 0.9471 (эпоха 13/15). Чекпоинт outputs/checkpoints/resnet50_F_seed7.pt
 - Сделано: искажённый val один раз (generator seed 1234567, outputs/val_corrupted.pt, n=699, 0/1/2+ искажений = 195/353/151). Эталон gpu_uint8 на нём: чистый 0.9499, искажённый 0.9084. Свип A/B/C × seed 42 и 7, 15 эпох. Выбор по среднему искажённому при падении чистого ≤ 0.01 от 0.949928: A 0.9471/0.9092 (оставлен), B 0.9399/0.9092 (чистый −0.0100, отсеян), C 0.9320/0.9235 (чистый −0.018, отсеян). Аугментации независимы на копии одного кадра (A/B/C); preview outputs/aug_preview.png. cudnn deterministic=True, benchmark=False, test не использовался.
-- Следующий шаг: сравнение с MLP/CNN (таблица + графики) и confusion matrix на val
 - Открытые вопросы: ансамбль и дообучение на train+val разрешены?
+- Раунд 2: D/E/F, 15 эпох, seeds 42 и 7, layer3 lr 5e-5. Среднее чистый/искажённый: D 0.9549/0.9084 (score 0.9317), E 0.9499/0.9378 (score 0.9438), F 0.9549/0.9456 (score 0.9503). Лучшая по (чистый+искажённый)/2: F seed 7 (чистый 0.9599, искажённый 0.9471, эпоха 13). Чекпоинт outputs/checkpoints/resnet50_F_seed7.pt. TTA 8: чистый 0.9642 (+0.0043), искажённый 0.9528 (+0.0057). test не использовался. cudnn deterministic=True, benchmark=False.
+- Путаницы чистый val: church->commercial_area 4, commercial_area->church 0 (sum 4) | lake->wetland 2, wetland->lake 2 (sum 4) | commercial_area->palace 0, palace->commercial_area 3 (sum 3) | railway->railway_station 2, railway_station->railway 1 (sum 3) | church->palace 2, palace->church 0 (sum 2)
+- Путаницы искажённый val: church->commercial_area 3, commercial_area->church 1 (sum 4) | railway->railway_station 2, railway_station->railway 2 (sum 4) | church->palace 1, palace->church 2 (sum 3) | commercial_area->palace 0, palace->commercial_area 3 (sum 3) | lake->wetland 2, wetland->lake 1 (sum 3)
+- Следующий шаг: сравнение с MLP/CNN (таблица + графики) и полная confusion matrix на val

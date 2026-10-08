@@ -5,3 +5,6 @@ outputs/logs/
 __pycache__/
 .ipynb_checkpoints/
 *.zip
+
+_cell_*.py
+_nb_dump.py

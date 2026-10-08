@@ -5,6 +5,6 @@
 - Файл submission: submission.csv (+ копия Name_Surname.csv для Moodle)
 - Baseline из блокнота: MLP val 0.356, CNN val 0.549 (32x32, Colab CPU)
 - Лучшая модель: ResNet50 (layer4 + classifier)   val acc: 0.9499 (epoch 10/15, sklearn совпал)
-- Сделано: ResNet50 IMAGENET1K_V1, вход 224, заморожен всё кроме layer4, свой nn.Sequential. AMP, AdamW 1e-3/1e-4, cosine, label smoothing 0.1, batch 64, 15 эпох. Smoke 2 батча ок. Среднее время эпохи 55.8 с. SEED=42, cudnn deterministic=True, benchmark=False.
+- Сделано: ResNet50, layer4+голова. Кэш uint8 (N, 3, 256, 256) для train/val/test, аугментации батчем на GPU. SEED=42, cudnn deterministic=True, benchmark=False. Val acc 0.9499 (эпоха 12/15, sklearn совпал) — как у CPU-пайплайна 0.9499. Среднее время эпохи 18.7 с (было 55.8 с).
 - Следующий шаг: сравнение с MLP/CNN (таблица + графики) и confusion matrix на val
 - Открытые вопросы: ансамбль и дообучение на train+val разрешены?

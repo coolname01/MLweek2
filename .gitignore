@@ -1,3 +1,7 @@
 data/
 *.pt
 outputs/logs/
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*.zip

@@ -44,10 +44,8 @@ pip install -r requirements.txt  # torch/torchvision ставить под св�
 
 ## Запуск
 ```bash
-python -m src.train --model resnet50 --epochs 30 --seed 42   # обучение
-python -m src.evaluate --ckpt outputs/checkpoints/best.pt    # val accuracy
-python -m src.predict --ckpt outputs/checkpoints/best.pt \
-       --out outputs/submissions/Name_Surname.csv            # submission
+Откройте `Week5_baseline.ipynb` (или итоговый блокнот), задайте `CONTEST_DATA`, выполните все ячейки сверху вниз. Результат — `submission.csv`.
+       --out outputs/submissions/Ivan_Sokolov.csv            # submission
 ```
 
 ## Подход

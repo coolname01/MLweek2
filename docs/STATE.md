@@ -100,9 +100,12 @@ A 0.9471/0.9092 (оставлен); B 0.9399/0.9092 (чистый -0.0100, от�
 
 \## TV1 (train + чистый val, seed 7)
 
-Запрос пользователя. Train 4999 + val 699 = 5698; val id уникальны, пересечения с train нет, метки из val.csv. Test только на TTA8. val_corrupted.pt не использовался. Веса после эпохи 15, без выбора эпохи.
+Запрос пользователя. Train 4999 + val 699 = 5698; val id уникальны, пересечения с train нет, метки из val.csv. Test только на TTA8. val\_corrupted.pt не использовался. Веса после эпохи 15, без выбора эпохи.
 
-Эпоха 73.1 с (72.6–74.4), пайплайн 19.8 мин. Проверка на чистом val 0.9928 (запоминание, метрика недействительна). Совпадение с submission_F_seed7_tta.csv: 8032/8299 = 0.9678. Чекпоинт resnet50_F_trainval_seed7.pt, submission_F_trainval_seed7_tta.csv. cudnn deterministic=True, benchmark=False.
+Эпоха 73.1 с (72.6–74.4), пайплайн 19.8 мин. Проверка на чистом val 0.9928 (запоминание, метрика недействительна). Совпадение с submission\_F\_seed7\_tta.csv: 8032/8299 = 0.9678. Чекпоинт resnet50\_F\_trainval\_seed7.pt, submission\_F\_trainval\_seed7\_tta.csv. cudnn deterministic=True, benchmark=False.
+
+Public (Kaggle): 0.94905 (ниже F seed 7 0.95215 и порога 0.9500). Train+val отклонён, TV2 (seed 42) не запускался. Финал остаётся F7+F42 без val в обучении.
+
 
 
 ## Следующие шаги

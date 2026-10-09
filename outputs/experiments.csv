@@ -46,3 +46,8 @@ resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,25,64,AdamW,0.001,0.0001,0.1
 resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.964235,18,0.964235,,42,round4,F,0.957082,0.957082,0.0001,1,,F,E_plain_tta8,,,,,0.960658,,
 resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,15,32,AdamW,0.001,0.0001,0.1,0.951359,11,0.951359,59.74,7,round4,F,0.942775,0.942775,5e-05,1,1406.0,F,F_plain,,15,0.951359,0.942775,0.947067,,
 resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,32,AdamW,0.001,0.0001,0.1,0.958512,11,0.958512,,7,round4,F,0.944206,0.944206,5e-05,1,,F,F_plain_tta8,,,,,0.951359,,
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.967096,,0.967096,,7+42,round4_ens,F,0.95422,0.95422,5e-05,,,F,F7+F42,,,,,0.960658,,
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.971388,,0.971388,,7+7,round4_ens,F,0.959943,0.959943,5e-05,,,F,F7+E7,,,,,0.965665,,
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.972818,,0.972818,,7+42,round4_ens,F,0.958512,0.958512,5e-05,,,F,F7+E42,,,,,0.965665,,
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.974249,,0.974249,,7+42,round4_ens,F,0.961373,0.961373,5e-05,,,F,E7+E42,,,,,0.967811,,
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.974249,,0.974249,,7+42+7+42,round4_ens,F,0.962804,0.962804,5e-05,,,F,F7+F42+E7+E42,,,,,0.968526,,

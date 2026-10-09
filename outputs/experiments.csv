@@ -16,3 +16,7 @@ resnet50,IMAGENET1K_V1,layer3+layer4+classifier,224,15,64,AdamW,0.001,0.0001,0.1
 resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,15,64,AdamW,0.001,0.0001,0.1,0.949928,11,0.949928,62.82,42,round2,F,0.944206,0.944206,5e-05,1,1656.0,F
 resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,15,64,AdamW,0.001,0.0001,0.1,0.959943,13,0.959943,62.49,7,round2,F,0.947067,0.947067,5e-05,1,1422.0,F
 resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.964235,,0.964235,,7,round2_tta,F,0.95279,0.95279,5e-05,,,F
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,15,64,AdamW,0.001,0.0001,0.1,0.949928,11,0.949928,63.96,42,retrain_F,F,0.944206,0.944206,5e-05,1,1794.0,F
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.964235,,0.964235,,7,ensemble_seed7_tta,F,0.95279,0.95279,5e-05,,,F
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.959943,,0.959943,,42,ensemble_seed42_tta,F,0.949928,0.949928,5e-05,,,F
+resnet50,IMAGENET1K_V1,layer3+layer4+classifier,256,,64,AdamW,0.001,0.0001,0.1,0.967096,,0.967096,,7+42,ensemble_mean,F,0.95422,0.95422,5e-05,,,F

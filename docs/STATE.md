@@ -1,32 +1,116 @@
 # STATE (обновляется агентом после каждого шага)
-- Железо: NVIDIA GeForce RTX 3060 12.0 GB, RAM 32 GB 3200 MHz, Ryzen 5 3600
-- OS: Windows 11, PowerShell. venv: .venv (Python 3.12)
-- torch/CUDA: torch 2.14.1+cu126, CUDA 12.6, torch.cuda.is_available()=True
-- Файл submission: submission.csv (+ копия Name_Surname.csv для Moodle)
-- Baseline из блокнота: MLP val 0.356, CNN val 0.549 (32x32, Colab CPU)
-- Лучшая модель: ResNet50 layer3+layer4, конфиг F, seed 7. Чистый val 0.9599, искажённый 0.9471 (эпоха 13/15). Чекпоинт outputs/checkpoints/resnet50_F_seed7.pt
-- Сделано: искажённый val один раз (generator seed 1234567, outputs/val_corrupted.pt, n=699, 0/1/2+ искажений = 195/353/151). Эталон gpu_uint8 на нём: чистый 0.9499, искажённый 0.9084. Свип A/B/C × seed 42 и 7, 15 эпох. Выбор по среднему искажённому при падении чистого ≤ 0.01 от 0.949928: A 0.9471/0.9092 (оставлен), B 0.9399/0.9092 (чистый −0.0100, отсеян), C 0.9320/0.9235 (чистый −0.018, отсеян). Аугментации независимы на копии одного кадра (A/B/C); preview outputs/aug_preview.png. cudnn deterministic=True, benchmark=False, test не использовался.
-- Открытые вопросы: ансамбль и дообучение на train+val разрешены?
-- Раунд 2: D/E/F, 15 эпох, seeds 42 и 7, layer3 lr 5e-5. Среднее чистый/искажённый: D 0.9549/0.9084 (score 0.9317), E 0.9499/0.9378 (score 0.9438), F 0.9549/0.9456 (score 0.9503). Лучшая по (чистый+искажённый)/2: F seed 7 (чистый 0.9599, искажённый 0.9471, эпоха 13). Чекпоинт outputs/checkpoints/resnet50_F_seed7.pt. TTA 8: чистый 0.9642 (+0.0043), искажённый 0.9528 (+0.0057). test не использовался. cudnn deterministic=True, benchmark=False.
-- Путаницы чистый val: church->commercial_area 4, commercial_area->church 0 (sum 4) | lake->wetland 2, wetland->lake 2 (sum 4) | commercial_area->palace 0, palace->commercial_area 3 (sum 3) | railway->railway_station 2, railway_station->railway 1 (sum 3) | church->palace 2, palace->church 0 (sum 2)
-- Путаницы искажённый val: church->commercial_area 3, commercial_area->church 1 (sum 4) | railway->railway_station 2, railway_station->railway 2 (sum 4) | church->palace 1, palace->church 2 (sum 3) | commercial_area->palace 0, palace->commercial_area 3 (sum 3) | lake->wetland 2, wetland->lake 1 (sum 3)
-- Submission: TTA 8 (повороты 0/90/180/270 + flip) на resnet50_F_seed7, img 256, ImageNet norm, AMP fp16. Чистый val 0.964235 (674/699). Test 8299 строк, инференс 75.1 с. Файлы outputs/submission_F_seed7_tta.csv и outputs/submission.csv. test не использовался для обучения.
-- Переобучение F seed 42: лучшая эпоха 11, чистый 0.949928, искажённый 0.944206 — совпало с логом раунда 2 (0.9499/0.9442, та же эпоха). Полный поэпохный трейс раунда 2 не хранился, сверена лучшая эпоха. Чекпоинт outputs/checkpoints/resnet50_F_seed42.pt (не в git). 15 эпох, mean 64.0 с. cudnn deterministic=True, benchmark=False. test не использовался.
-- Ансамбль без обучения, TTA 8, среднее softmax, val n=699. seed7 0.964235/0.952790 (ошибки 25/33, совпало с проверкой), seed42 0.959943/0.949928 (28/35), ансамбль 0.967096/0.954220 (23/32). Чистый: обе правы 663, обе неправы 17, только одна 19. Искажённый: 652 / 21 / 26. Топ-5 ансамбля чистый: church↔palace 4, lake↔wetland 3, church↔commercial_area 2, palace↔railway_station 2, railway↔railway_station 2. Искажённый: church↔commercial_area 4, lake↔wetland 4, basketball_court↔tennis_court 3, railway↔railway_station 3, church↔medium_residential 2. test не трогался.
-- Раунд 3: F, EMA decay 0.999, BN-буферы копируются, decay не входит в оптимизатор. Plain clean-max совпал с эталоном: seed 42 эпоха 11 0.9499/0.9442, seed 7 эпоха 13 0.9599/0.9471. Retrained seed 7 TTA 0.9642/0.9528. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 3 resnet50 seed 42: plain лучшая по среднему e12 0.9499/0.9485, финал e15 0.9456/0.9485; ema лучшая e15 0.9070/0.8841, финал e15 0.9070/0.8841. Эпоха 65.1 с, пик 1878 MB.
-- Раунд 3 resnet50 seed 7: plain лучшая e13 0.9599/0.9471, финал e15 0.9528/0.9413; ema лучшая e15 0.9099/0.8913, финал e15 0.9099/0.8913. Эпоха 65.2 с, пик 1516 MB.
-- Раунд 3 resnet101 seed 7: batch 64, accum 1. Эпоха 1: 163.3 с, пик 3630 MB (пик дальше не вырос), среднее 160.3 с. Plain лучшая e14 0.9557/0.9528 (score 0.9542), финал e15 0.9514/0.9499; ema лучшая e15 0.8956/0.8898. Эпоха 5 vs F seed 7: +0.0143/+0.0229. Seed 42 не запускался: 0.9542 − 0.9535 = +0.0007 < 0.005.
-- Раунд 3 TTA 8 resnet50 seed 7 plain: 0.9642/0.9528. ResNet101 seed 7 plain: 0.9642/0.9499.
-- Раунд 3 pipeline ResNet101: кэш ~12 с + 15 эпох 2405 с + test TTA ~121 с = 42.3 мин. 121 с = 20.3 с на оба val / 2 × 8299/699 (калибровка ResNet50: 12.8 с → 76 с при измеренных 75.1 с). Чекпоинты: outputs/checkpoints/resnet50_F_seed7_plain.pt, outputs/checkpoints/resnet50_F_seed7_ema.pt, outputs/checkpoints/resnet101_F_seed7_plain.pt, outputs/checkpoints/resnet101_F_seed7_ema.pt.
-- Раунд 4 A: 256 0.9599/0.9471 288 0.9614/0.9385 320 0.9485/0.9371; ms256+288 0.9700/0.9514; TTA8 0.9642/0.9528. Кандидаты: нет. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 B seed 7: plain 0.9599/0.9471 e13 (финал e15 0.9528/0.9413); swa 0.9499/0.9299; ema 0.9557/0.9428. Эпоха 63.3 с. TTA8 plain 0.9642/0.9528. Пайплайн 17.7 мин. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 C seed 7: plain 0.9471/0.9471 e15 (финал e15 0.9471/0.9471); swa -; ema -. Эпоха 61.0 с. TTA8 plain 0.9571/0.9442. Пайплайн 17.1 мин. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 D seed 7: plain 0.9471/0.9557 e19 (финал e20 0.9499/0.9528); swa -; ema -. Эпоха 60.8 с. TTA8 plain 0.9571/0.9542. Пайплайн 22.1 мин. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 E seed 7: plain 0.9614/0.9585 e17 (финал e25 0.9585/0.9571); swa -; ema -. Эпоха 60.5 с. TTA8 plain 0.9685/0.9614. Пайплайн 27.1 мин. Чекпоинт resnet50_F_seed7_layer3_1e-4.pt. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 E seed 42: plain 0.9642/0.9542 e18 (финал e25 0.9614/0.9557); swa -; ema -. Эпоха 60.5 с. TTA8 plain 0.9642/0.9571. Пайплайн 27.1 мин. Чекпоинт resnet50_F_seed42_layer3_1e-4.pt. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 F seed 7: plain 0.9514/0.9428 e11 (финал e15 0.9514/0.9428); swa -; ema -. Эпоха 59.7 с. TTA8 plain 0.9585/0.9442. Пайплайн 16.8 мин. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 итог: порог +0.004 к score 0.9535 прошёл только E (layer3 lr 1e-4, 25 эпох). seed 7 e17 0.9614/0.9585 (score 0.9599, +0.0064), TTA8 0.9685/0.9614; seed 42 e18 0.9642/0.9542 против эталона 0.9499/0.9442, TTA8 0.9642/0.9571. Пайплайн 27.1 мин. Чекпоинты resnet50_F_seed7_layer3_1e-4.pt и resnet50_F_seed42_layer3_1e-4.pt. B plain совпал с эталоном. Останов эпохи 5 не сработал. test не использовался. cudnn deterministic=True, benchmark=False.
-- Раунд 4 submission: TTA8 на resnet50_F_seed7_layer3_1e-4.pt (эпоха 17), вход 256, eval. outputs/submission_E_seed7_tta.csv, 8299 строк. Совпадение с submission_F_seed7_tta 8075/8299 (0.9730). Test только для инференса. cudnn deterministic=True, benchmark=False.
-- Раунд 4 ансамбли TTA8, среднее softmax, val n=699. Одиночные взяты из прошлых прогонов (F7 0.9642/0.9528, F42 0.9599/0.9499, E7 0.9685/0.9614, E42 0.9642/0.9571) и совпали при проверке. F7+F42 0.9671/0.9542, F7+E7 0.9714/0.9599, F7+E42 0.9728/0.9585, E7+E42 0.9742/0.9614, четыре модели 0.9742/0.9628. Submission: ens_F7F42 совпал с F7 TTA на 8166/8299 (0.9840), ens_4models на 8149/8299 (0.9819). Test только для инференса. Пайплайн ноутбука F затем F: кэш 37.6 с + 15×62.49 с + 15×62.82 с + TTA 2×75.1 с = 34.5 мин. cudnn deterministic=True, benchmark=False.
-- Следующий шаг: сравнение с MLP/CNN (таблица + графики) и полная confusion matrix на val
+
+\## Окружение
+
+\- Железо: NVIDIA GeForce RTX 3060 12.0 GB, RAM 32 GB 3200 MHz, Ryzen 5 3600
+
+\- OS: Windows 11, PowerShell. venv: .venv (Python 3.12)
+
+\- torch 2.14.1+cu126, CUDA 12.6, torch.cuda.is\_available()=True
+
+\- Submission: submission.csv (+ копия Name\_Surname.csv для Moodle)
+
+\- Baseline из блокнота: MLP val 0.356, CNN val 0.549 (32x32, Colab CPU)
+
+
+
+\## Правила
+
+\- test используется только для инференса, не для обучения и подбора.
+
+\- cudnn deterministic=True, benchmark=False. Seed и конфигурацию F не менять без решения пользователя.
+
+\- Лимит: полный пайплайн ноутбука не более 45 мин (цель не более 40-42 мин).
+
+\- Чекпоинты (\*.pt) не коммитить. Ноутбуки целиком не читать.
+
+\- Выбор финала: по среднему (чистый+искажённый)/2 на val, public LB вторичный сигнал.
+
+\- Ансамбль разрешён. Дообучение на train+val: разрешение не подтверждено, не использовать.
+
+
+
+\## Искажённый val
+
+Собран один раз (generator seed 1234567, outputs/val\_corrupted.pt, n=699, искажений 0/1/2+ = 195/353/151). Эталон gpu\_uint8: чистый 0.9499, искажённый 0.9084.
+
+
+
+\## Раунд 1 (свип A/B/C, seed 42 и 7, 15 эпох)
+
+Критерий: чистый val не падает более чем на 0.01 от 0.949928, выбор по искажённому.
+
+A 0.9471/0.9092 (оставлен); B 0.9399/0.9092 (чистый -0.0100, отсеян); C 0.9320/0.9235 (чистый -0.018, отсеян).
+
+
+
+\## Раунд 2 (D/E/F, 15 эпох, seeds 42 и 7, layer3 lr 5e-5)
+
+Среднее чистый/искажённый (score): D 0.9549/0.9084 (0.9317), E 0.9499/0.9378 (0.9438), F 0.9549/0.9456 (0.9503).
+
+Лучший одиночный: F seed 7, эпоха 13: чистый 0.9599, искажённый 0.9471. TTA8: 0.9642 / 0.9528. Чекпоинт outputs/checkpoints/resnet50\_F\_seed7.pt.
+
+
+
+\## Раунд 3 (проверка пайплайна)
+
+\- Plain-траектория F воспроизведена, TTA8 F seed 7 = 0.9642 / 0.9528.
+
+\- EMA (decay 0.999) хуже plain: финал 0.9070 / 0.8841 (seed 42), 0.9099 / 0.8913 (seed 7). Причина: за 1170 шагов 0.999 слишком высок.
+
+\- ResNet101 seed 7: лучшая эпоха 14, 0.9557 / 0.9528, TTA8 0.9642 / 0.9499; 160 с на эпоху, пайплайн около 42 мин. Прироста нет, отклонён. Seed 42 не запускался.
+
+
+
+\## Раунд 4
+
+\- A (мультимасштаб на чекпоинте F seed 7): 256+288 TTA чистый 0.9700, искажённый 0.9514, score +0.0021 к TTA8 эталона (порог +0.004), не взят.
+
+\- B (SWA, EMA 0.99): хуже plain. C (V2-веса): 0.9471/0.9471. D (CutMix, 20 эпох): 0.9471/0.9557. F (batch 32): 0.9514/0.9428. Все отклонены.
+
+\- E (layer3 lr 1e-4, 25 эпох): seed 7 0.9614/0.9585 (лучшая эпоха 17), seed 42 0.9642/0.9542 (эпоха 18). TTA8: 0.9685/0.9614 и 0.9642/0.9571. Пайплайн 27.1 мин. Чекпоинты resnet50\_F\_seed7\_layer3\_1e-4.pt, resnet50\_F\_seed42\_layer3\_1e-4.pt.
+
+\- Public E seed 7: 0.94974 (хуже F 0.95215), val-прирост E не подтвердился, различие в пределах шума.
+
+
+
+\## Ансамбли (среднее softmax, TTA8, val чистый / искажённый / среднее; public)
+
+\- F7: 0.9642 / 0.9528 / 0.9585; public 0.95215
+
+\- E7: 0.9685 / 0.9614 / 0.9649; public 0.94974
+
+\- F7+F42: 0.9671 / 0.9542 / 0.9607; public 0.95352
+
+\- F7+F42+E7+E42: 0.9742 / 0.9628 / 0.9685; public 0.95559
+
+Четыре модели не укладываются в 45 мин.
+
+
+
+\## Решение (финал)
+
+Ансамбль F seed 7 + F seed 42, конфигурация F, 15 эпох на модель, TTA8, среднее softmax.
+
+Время пайплайна 34.5 мин (кэш 37.6 с + 15×62.49 с + 15×62.82 с + TTA 2×75.1 с). Альтернативы: F+E около 43.7 мин (слишком рискованно), E+E около 53 мин (лимит превышен).
+
+Ожидаемый результат: val 0.9671 / 0.9542, public около 0.9535. Лидер public: 0.97.
+
+
+
+\## Следующие шаги
+
+1\. final\_solution.ipynb собран. Правило среднего по логу раунда 3: seed 7 эпоха 13, seed 42 эпоха 12. Файл resnet50\_F\_seed42.pt — эпоха 11, в ноутбук не подгонялось. Синтаксис ок, smoke 2 батча. Полный прогон не запускался.
+
+2\. Полный прогон вручную: время не более 42 мин. Совпадение с outputs/submission\_ens\_F7F42\_tta.csv может быть ниже 100%: тот файл собран из F42 эпохи 11.
+
+3\. Коммит, тег final.
+
+
+
+\## Частые путаницы (F seed 7)
+
+Чистый val: church->commercial\_area 4 (сумма 4), lake<->wetland 2+2 (4), commercial\_area<->palace 0+3 (3), railway<->railway\_station 2+1 (3), church<->palace 2+0 (2).
+
+Искажённый val: church<->commercial\_area 3+1 (4), railway<->railway\_station 2+2 (4), church<->palace 1+2 (3), commercial\_area<->palace 0+3 (3), lake<->wetland 2+1 (3).
+

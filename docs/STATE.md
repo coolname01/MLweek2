@@ -144,3 +144,11 @@ Smoke 2 батча: итерация 0.711 с, оценка эпохи 81.5 с, 
 
 Искажённый val: church<->commercial\_area 3+1 (4), railway<->railway\_station 2+2 (4), church<->palace 1+2 (3), commercial\_area<->palace 0+3 (3), lake<->wetland 2+1 (3).
 
+## Раунд 6
+- P0 F seed 7, 1 эпоха: 0.8655/0.8498 за 64.1 с, GPU sm 93% (dmon, n=64). Доли: color_jitter 6.3%, forward 39.2%, backward 47.9%. Ускорения без смены семантики: ColorJitter: один batched проход вместо python-цикла, факторы и порядок те же; аугментации не доминируют, их слияние почти не сократит эпоху Чекпоинт не сохранён. test не использовался. cudnn deterministic=True, benchmark=False.
+- S1 F10 seed 7: лучшая e9 0.9485/0.9385 (score 0.9435), финал e10 0.9485/0.9371, TTA8 0.9514/0.9442, эпоха 63.1 с. Чекпоинт resnet50_F10_seed7.pt. test не использовался. cudnn deterministic=True, benchmark=False.
+- S1 порог S4: score 0.9435 ниже 0.9485.
+- S2 E10 seed 7 layer3 1e-4: лучшая e10 0.9514/0.9471 (score 0.9492), финал e10 0.9514/0.9471, TTA8 0.9585/0.9499, эпоха 64.7 с. Чекпоинт resnet50_E10_seed7.pt. test не использовался. cudnn deterministic=True, benchmark=False.
+- S3 ResNet18 F seed 7: лучшая e12 0.9242/0.9142 (score 0.9192), финал e12 0.9242/0.9142, TTA8 0.9356/0.9213, эпоха 14.8 с. Чекпоинт resnet18_F_seed7.pt. test не использовался. cudnn deterministic=True, benchmark=False.
+- S4 не запускался: S1 score ниже 0.9485.
+- Ансамбли TTA8 (чистый | искажённый | среднее | мин): F7+F42 0.9671|0.9542|0.9607|33.92; F7+F42+S1 0.9614|0.9514|0.9564|45.70; F7+F42+S3 0.9614|0.9471|0.9542|37.82; F7+F42+0.5*S3 0.9657|0.9499|0.9578|37.82; F7+S3 0.9585|0.9499|0.9542|20.57. F42 чекпоинт epoch 11. S3 test TTA 26.9 с. submission_cand1_tta.csv F7+F42 0.9671/0.9542/0.9607 33.92 мин, совпадение 8299/8299=1.0000 submission_cand2_tta.csv F7+F42+0.5*S3 0.9657/0.9499/0.9578 37.82 мин, совпадение 8253/8299=0.9945 submission_cand3_tta.csv F7+S3 0.9585/0.9499/0.9542 20.57 мин, совпадение 8121/8299=0.9786 Лимит 42 мин. test только в TTA. Чекпоинты не коммитить.

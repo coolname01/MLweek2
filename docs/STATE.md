@@ -106,7 +106,14 @@ A 0.9471/0.9092 (оставлен); B 0.9399/0.9092 (чистый -0.0100, от�
 
 Public (Kaggle): 0.94905 (ниже F seed 7 0.95215 и порога 0.9500). Train+val отклонён, TV2 (seed 42) не запускался. Финал остаётся F7+F42 без val в обучении.
 
+## Раунд 5
 
+* DATA1 counts train: baseball\_diamond:250 basketball\_court:250 bridge:250 church:250 cloud:250 commercial\_area:250 lake:250 medium\_residential:250 overpass:250 palace:249 railway:250 railway\_station:250 rectangular\_farmland:250 roundabout:250 runway:250 sea\_ice:250 snowberg:250 tennis\_court:250 terrace:250 wetland:250. val: baseball\_diamond:35 basketball\_court:35 bridge:34 church:35 cloud:35 commercial\_area:35 lake:35 medium\_residential:35 overpass:35 palace:35 railway:35 railway\_station:35 rectangular\_farmland:35 roundabout:35 runway:35 sea\_ice:35 snowberg:35 tennis\_court:35 terrace:35 wetland:35.
+* DATA1 size train: n 4999 | w 256/256/256 | h 256/256/256 | min\_side 256/256/256 | frac<256 0.0000. val: n 699 | w 256/256/256 | h 256/256/256 | min\_side 256/256/256 | frac<256 0.0000. train+val median min\_side 256, frac<256 0.0000.
+* DATA1 dups: file md5 train 0 (cross-class 0), train-val 0 (cross-class 0); pixel sha1 train 0/0, train-val 0/0; dHash<=4 train 0/0, train-val 0/0. Список outputs/data1\_duplicates.txt. Test не читался.
+* DATA1 F seed 7 на train без аугментации: mismatch 0.0042 (21/4999). Топ-40: outputs/data1\_top40.csv. Сетка: outputs/suspicious\_train.png.
+- ConvNeXt запрещён правилами, из проекта исключён
+- R320 не запускался: все картинки 256 px
 
 ## Следующие шаги
 
@@ -115,6 +122,7 @@ Public (Kaggle): 0.94905 (ниже F seed 7 0.95215 и порога 0.9500). Tra
 2\. Полный прогон вручную: время не более 42 мин. Совпадение с outputs/submission\_ens\_F7F42\_tta.csv может быть ниже 100%: тот файл собран из F42 эпохи 11.
 
 3\. Коммит, тег final.
+
 
 
 
